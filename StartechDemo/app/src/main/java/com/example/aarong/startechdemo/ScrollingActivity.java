@@ -46,8 +46,7 @@ public class ScrollingActivity extends AppCompatActivity {
         Toast.makeText(ScrollingActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void setData(String data) {
-        ArrayList<Product> products = this.api.parseApiResult(data);
+    private void setData(ArrayList<Product> products) {
         this.data.addAll(products);
         toast("Data loaded!");
         listAdapter.notifyDataSetChanged();
@@ -57,14 +56,14 @@ public class ScrollingActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object response) {
-            setData((String)response);
+            setData((ArrayList<Product>) response);
         }
 
         @Override
         protected Object doInBackground(Object[] params) {
             Api api = (Api) params[0];
             try {
-                String response = api.get(ScrollingActivity.this.pageNumber);
+                ArrayList<Product> response = api.get(ScrollingActivity.this.pageNumber);
                 ScrollingActivity.this.pageNumber++;
                 return response;
             } catch (IOException e) {
