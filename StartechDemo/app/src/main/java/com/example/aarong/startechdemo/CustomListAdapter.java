@@ -1,6 +1,6 @@
 package com.example.aarong.startechdemo;
+import com.example.aarong.startechdemo.Product;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.LruCache;
@@ -9,9 +9,6 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -19,15 +16,10 @@ import android.view.ViewGroup;
 
 public class CustomListAdapter extends BaseAdapter {
 
-    private ArrayList<Api.Product> data;
+    private ArrayList<Product> data;
     private ScrollingActivity scrollingActivity;
-    private LruCache<String, Bitmap> imageCache = new LruCache<String, Bitmap>(14440000 * 15) {
-        protected int sizeOf(String key, Bitmap value) {
-            return value.getByteCount();
-        }
-    };
 
-    public CustomListAdapter(ScrollingActivity context, ArrayList<Api.Product> data) {
+    public CustomListAdapter(ScrollingActivity context, ArrayList<Product> data) {
         this.data = data;
         this.scrollingActivity = context;
     }
@@ -39,53 +31,7 @@ public class CustomListAdapter extends BaseAdapter {
         private AsyncTask imageLoadTask;
 
         private void setImage(String imageUrl) {
-            this.loadAndSetImage(imageUrl, this.image, this.imageLoadTask);
-        }
-
-        private void loadAndSetImage(final String imageUrl, final ImageView imageView, AsyncTask imageLoadTask) {
-            Bitmap bitmap = imageCache.get(imageUrl);
-            if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-            } else {
-                if (imageLoadTask != null) {
-                    imageLoadTask.cancel(true);
-                }
-                AsyncTask task = new AsyncTask() {
-                    @Override
-                    protected void onPreExecute() {
-                        imageView.setImageResource(R.color.colorAccent);
-                        super.onPreExecute();
-                    }
-
-                    @Override
-                    protected Object doInBackground(Object[] params) {
-                        String imageUrl = (String) params[0];
-                        Bitmap result = getBitmapFromUrl(imageUrl);
-                        imageCache.put(imageUrl, result);
-                        return result;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Object result) {
-                        imageView.setImageBitmap((Bitmap) result);
-                    }
-                };
-                this.imageLoadTask = task;
-                task.execute(imageUrl);
-            }
-        }
-
-        private Bitmap getBitmapFromUrl(String imageUrl) {
-            InputStream input = null;
-            try {
-                input = new URL(imageUrl).openStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Log.d("Image Download", imageUrl);
-            Bitmap bitmap = BitmapFactory.decodeStream(input);
-            Log.d("Image Size", Integer.toString(bitmap.getByteCount()));
-            return bitmap;
+            //TODO
         }
 
     }
@@ -107,7 +53,7 @@ public class CustomListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
-        final Api.Product product = data.get(i);
+        final Product product = data.get(i);
         ViewHolder holder;
         View resultView;
         if (convertView == null) {
@@ -130,7 +76,7 @@ public class CustomListAdapter extends BaseAdapter {
         return resultView;
     }
 
-    private void setHolderValue(ViewHolder holder, Api.Product product) {
+    private void setHolderValue(ViewHolder holder, Product product) {
         holder.name.setText(product.name);
         holder.description.setText(product.description);
         holder.setImage(product.imageUrl);

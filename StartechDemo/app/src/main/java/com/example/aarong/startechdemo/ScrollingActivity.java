@@ -1,6 +1,5 @@
 package com.example.aarong.startechdemo;
-import com.example.aarong.startechdemo.Api.Product;
-import android.os.AsyncTask;
+import com.example.aarong.startechdemo.Product;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,9 +13,7 @@ import java.util.ArrayList;
 public class ScrollingActivity extends AppCompatActivity {
 
     private ArrayList<Product> data = new ArrayList<Product>();
-    private Api api = new Api();
     private CustomListAdapter listAdapter = new CustomListAdapter(this, data);
-    private int pageNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +33,8 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 toast("Fetching data...");
-                GetDataAsyncTask getDataAsyncTask = new GetDataAsyncTask();
-                getDataAsyncTask.execute(ScrollingActivity.this.api);
+                toast("Just kidding. This is not implemented yet...");
+                //TODO - get data and then call setData
             }
         };
     }
@@ -52,24 +49,4 @@ public class ScrollingActivity extends AppCompatActivity {
         listAdapter.notifyDataSetChanged();
     }
 
-    class GetDataAsyncTask extends AsyncTask {
-
-        @Override
-        protected void onPostExecute(Object response) {
-            setData((ArrayList<Product>) response);
-        }
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-            Api api = (Api) params[0];
-            try {
-                ArrayList<Product> response = api.get(ScrollingActivity.this.pageNumber);
-                ScrollingActivity.this.pageNumber++;
-                return response;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    };
 }
